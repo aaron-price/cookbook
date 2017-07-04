@@ -1,0 +1,109 @@
+# File Navigation
+
+# ls as soon as you cd.
+function cl() {
+  cd "$@" && ls
+}
+
+function sandbox(){ cl /Users/aaron/Documents/sandbox/"$1"; }
+function repos(){ cl /Users/aaron/Documents/repos/"$1"; }
+function cookbook(){ cl /Users/aaron/Documents/repos/cookbook/"$1"; }
+
+
+# Misc apps
+alias sub="subl"
+
+
+# Python / Django Shortcuts
+alias python="python3"
+alias pip="pip3"
+
+#### PYTHON-DJANGO MANAGER (aka pdm)
+# USAGE:
+# pdm r = python manage.py runserver
+# pdm app my_app = python manage.py startapp my_app
+# pdm <command> = python manage.py <command>
+
+function pdm() {
+  inp="$1"
+  if [ $1 = "r" ]; then
+    inp="runserver"
+  fi
+
+  if [ $1 = "app" ]; then
+    inp="startapp"
+  fi
+  if [ $1 = "su" ]; then
+    inp="createsuperuser"
+  fi
+
+  python manage.py $inp "${@:2:99}"
+}
+
+
+#### COMMON CLI API
+#### @TODO
+#### start <program name> 
+#### stop <program name>
+#### access <program name>
+#### config <program name>
+#### <command> ls = prints all possible program names for the command
+#### Program names: ls, mongo, mysql, apache, node, postgres, nginx, etc
+#### EXAMPLE USAGE:
+####### "start django" - starts the django server
+####### "config bash" - opens the .bash_profile file in sublime
+
+function start() {
+  if [ $1 = "django" ]; then
+    pdm "r"
+  fi
+  if [ $1 = "ls" ]; then
+    echo "Available names: django"
+  fi
+}
+function stop() {
+  if [ $1 = "ls" ]; then
+    echo "Available names: none yet"
+  fi
+}
+function access() {
+  if [ $1 = "ls" ]; then
+    echo "Available names: none yet"
+  fi
+}
+function config() {
+  if [ $1 = "bash" ]; then
+    sub ~/.bash_profile
+  fi
+  if [ $1 = "ls" ]; then
+    echo "Available names: bash, git"
+  fi
+  if [ $1 = "git" ]; then
+    sub ~/.gitconfig
+  fi
+
+}
+
+
+#### GIT SHORTCUTS
+# Because who wants to type "git" *before* the alias :-P
+
+# Display branch and path by default
+export PS1="\\w:\$(git branch 2>/dev/null | grep '^*' | colrm 1 2)\$ "
+
+# e.g. cm "Commit message here"
+function cm() {
+  git add -A
+  git commit -m "$@"
+}
+
+# pushes to remote, current branch
+function pu() {
+  git push -u origin HEAD
+}
+
+
+# Setting PATH for Python 3.6
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
+export PATH
